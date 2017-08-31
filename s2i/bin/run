@@ -1,0 +1,38 @@
+#!/bin/bash
+source /opt/app-root/etc/generate_container_user
+
+set -e
+
+# Guess the number of workers according to the number of cores
+function get_default_web_concurrency() {
+  limit_vars=$(cgroup-limits)
+  local $limit_vars
+  if [ -z "${NUMBER_OF_CORES:-}" ]; then
+    echo 1
+    return
+  fi
+
+  local max=$((NUMBER_OF_CORES*2))
+  # Require at least 40 MiB and additional 40 MiB for every worker
+  local default=$(((${MEMORY_LIMIT_IN_BYTES:-MAX_MEMORY_LIMIT_IN_BYTES}/1024/1024 - 40) / 40))
+  default=$((default > max ? max : default))
+  default=$((default < 1 ? 1 : default))
+  echo $default
+}
+
+app_script_check="${APP_SCRIPT-}"
+APP_SCRIPT="${APP_SCRIPT-app.sh}"
+if [[ -f "$APP_SCRIPT" ]]; then
+  echo "---> Running application from script ($APP_SCRIPT) ..."
+  if [[ "$APP_SCRIPT" != /* ]]; then
+    APP_SCRIPT="./$APP_SCRIPT"
+  fi
+  exec "$APP_SCRIPT"
+else
+  test -n "$app_script_check" && (>&2 echo "ERROR: file '$app_script_check' not found.") && exit 1
+fi
+
+APP_HOME=${APP_HOME:-.}
+>&2 echo "ERROR: don't know how to run your application."
+>&2 echo "Please set either APP_MODULE, APP_FILE or APP_SCRIPT environment variables, or create a file 'app.py' to launch your application."
+exit 1

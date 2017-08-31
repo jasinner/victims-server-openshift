@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VICTIMS_JAR=${PWD}/libs/java-hash.jar
+VICTIMS_JAR=/opt/app-root/src/libs/java-hash.jar
 
 if [ -f ${VICTIMS_JAR} ]; then
     java -jar $VICTIMS_JAR $@

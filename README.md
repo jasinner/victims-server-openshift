@@ -26,9 +26,18 @@ oc process -f mongodb-ephemeral.yaml | oc create -f -
 *Due to the authentication mechanism being updated to SCRAM-SHA1 in Mongo 3.x, we have a requirement to use an earlier version of MongoDB, eg. 2.6*
 *The emphemeral template doesn't use permanent storage with a persistent volume, all data will be lost when the pod is migrated!*
 
-### Build the victims-web image with s2i tool
+### Create the builder image 
 ```sh
-s2i build -c . centos/python-27-centos7 registry.starter-us-east-1.openshift.com/victims/victims-web
+make
+```
+
+This will build a local image with the name victims-rhel7
+
+*A RHEL Subscription will be required to build this image. You can get a $0 subscription here: https://docs.openshift.org/latest/dev_guide/builds/index.html#defining-a-buildconfig*
+
+### Build the victims-web image with s2i tool, using the previously built builder image
+```sh
+s2i build -c . victims-rhel7 registry.starter-us-east-1.openshift.com/victims/victims-web
 ```
 *The ''-c' argument tells s2i to use the local copy, not one stored in the local git repository*
 
