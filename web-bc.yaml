@@ -1,16 +1,10 @@
 apiVersion: v1
 kind: BuildConfig
 metadata:
-  annotations:
-    openshift.io/generated-by: OpenShiftNewApp
-  creationTimestamp: '2017-09-01T01:04:34Z'
-  labels:
-    app: victims-server-openshift
-  name: victims-server-openshift
-  namespace: victims
-  resourceVersion: '1363326992'
-  selfLink: /oapi/v1/namespaces/victims/buildconfigs/victims-server-openshift
-  uid: 84c57582-8eb1-11e7-912e-1250f17a13c8
+ labels:
+    app: web
+  name: web
+  namespace: victims-web
 spec:
   nodeSelector: null
   output:
@@ -30,9 +24,9 @@ spec:
     sourceStrategy:
       env:
         - name: MONGODB_DB_USERNAME
-          value: userNMS
+          value: 
         - name: MONGODB_DB_PASSWORD
-          value: soguyMttTWmYNM73
+          value: 
       from:
         kind: ImageStreamTag
         name: 'victims-rhel7:latest'
@@ -44,10 +38,5 @@ spec:
     - generic:
         secret: BiqSOnFLH5-wDwjkFmtt
       type: Generic
-    - imageChange:
-        lastTriggeredImageID: >-
-          172.30.208.107:5000/victims/victims-rhel7@sha256:b47e9c3d365680f5874be4b657c5aa926d46ec49f08047faefcb8d8cfe926599
-      type: ImageChange
     - type: ConfigChange
-status:
-  lastVersion: 2
+
